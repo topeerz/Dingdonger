@@ -14,8 +14,11 @@ struct Theme {
 
 struct TimerView: View {
     @State private var viewModel = TimerViewModel()
+    private var iteractor = TimerIteractor()
 
     var body: some View {
+        let _ = iteractor.timerViewModel = viewModel
+
         VStack {
             ZStack {
                 Circle()
@@ -31,12 +34,7 @@ struct TimerView: View {
 
             HStack {
                 Button(viewModel.isRunning ? "Pause" : "Start") {
-                    if viewModel.isRunning {
-                        viewModel.stopTimer()
-                    } else {
-                        viewModel.startTimer()
-                    }
-                    viewModel.isRunning.toggle()
+                    iteractor.onPauseStartButtonTap()
                 }
                 .padding()
                 .background(Color.blue)
@@ -46,10 +44,7 @@ struct TimerView: View {
                 Spacer().frame(width: 30)
 
                 Button("Reset") {
-                    viewModel.stopTimer()
-                    viewModel.timeRemaining = viewModel.totalTime
-                    viewModel.progress = 1.0
-                    viewModel.isRunning = false
+                    iteractor.onResetButtonTap()
                 }
                 .padding()
                 .background(Color.red)
@@ -61,9 +56,6 @@ struct TimerView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Theme.backgroundColor)
     }
-
-
-
 }
 
 #Preview {
