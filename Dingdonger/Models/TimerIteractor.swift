@@ -9,12 +9,19 @@ import Foundation
 import AVFoundation
 
 @MainActor
-class TimerIteractor {
+protocol TimerIteractorProtocol {
+    func onResetButtonTap()
+    func onPauseStartButtonTap()
+
+    var timerViewModel: TimerViewModel? { get set }
+}
+
+class TimerIteractor: TimerIteractorProtocol {
     var audioPlayer: AVAudioPlayer?
-    var timerViewModel: TimerViewModel?
     var timer: Timer? = nil
     let totalTime = 10.0
     var timeRemaining = 10.0
+    var timerViewModel: TimerViewModel?
 
     func onResetButtonTap() {
         guard let timerViewModel = self.timerViewModel else {

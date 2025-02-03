@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "DC322804-1950-49FF-893C-961916396644",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:Dingdonger.xcodeproj",
+        "identifier" : "C8C6A98B2D50E58500331E1F",
+        "name" : "DingdongerTests"
+      }
+    }
+  ],
+  "version" : 1
+}
