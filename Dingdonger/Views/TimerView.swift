@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import AVFoundation
 
 struct Theme {
     static let backgroundColor = Color.gray
@@ -14,13 +13,7 @@ struct Theme {
 }
 
 struct TimerView: View {
-    @State private var progress: CGFloat = 1.0
-    @State private var timeRemaining: Int = 10
-    @State private var isRunning: Bool = false
-    @State private var audioPlayer: AVAudioPlayer?
-    let totalTime: Int = 10
-
-    @State private var timer: Timer? = nil
+    @State private var viewModel = TimerViewModel()
 
     var body: some View {
         VStack {
@@ -29,21 +22,21 @@ struct TimerView: View {
                     .stroke(Color.gray.opacity(0.3), lineWidth: 10)
 
                 Circle()
-                    .trim(from: 0, to: progress)
+                    .trim(from: 0, to: viewModel.progress)
                     .stroke(Theme.primaryColor, lineWidth: 10)
                     .rotationEffect(.degrees(90))
-                    .animation(.linear(duration: 1), value: progress)
+                    .animation(.linear(duration: 1), value: viewModel.progress)
             }
             .frame(width: 300, height: 300)
 
             HStack {
-                Button(isRunning ? "Pause" : "Start") {
-                    if isRunning {
-                        stopTimer()
+                Button(viewModel.isRunning ? "Pause" : "Start") {
+                    if viewModel.isRunning {
+                        viewModel.stopTimer()
                     } else {
-                        startTimer()
+                        viewModel.startTimer()
                     }
-                    isRunning.toggle()
+                    viewModel.isRunning.toggle()
                 }
                 .padding()
                 .background(Color.blue)
@@ -53,10 +46,10 @@ struct TimerView: View {
                 Spacer().frame(width: 30)
 
                 Button("Reset") {
-                    stopTimer()
-                    timeRemaining = totalTime
-                    progress = 1.0
-                    isRunning = false
+                    viewModel.stopTimer()
+                    viewModel.timeRemaining = viewModel.totalTime
+                    viewModel.progress = 1.0
+                    viewModel.isRunning = false
                 }
                 .padding()
                 .background(Color.red)
@@ -69,37 +62,7 @@ struct TimerView: View {
         .background(Theme.backgroundColor)
     }
 
-    func startTimer() {
-        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
-            if timeRemaining > 0 {
-                timeRemaining -= 1
-                progress = CGFloat(timeRemaining) / CGFloat(totalTime)
 
-            } else {
-                stopTimer()
-                playSound()
-            }
-        }
-    }
-
-    func stopTimer() {
-        timer?.invalidate()
-        timer = nil
-    }
-
-    func playSound() {
-        guard let soundURL = Bundle.main.url(forResource: "ding", withExtension: "wav") else {
-            print("Sound file not found")
-            return
-        }
-
-        do {
-            audioPlayer = try AVAudioPlayer(contentsOf: soundURL)
-            audioPlayer?.play()
-        } catch {
-            print("Couldn't play sound: \(error)")
-        }
-    }
 
 }
 
