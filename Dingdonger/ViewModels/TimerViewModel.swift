@@ -13,4 +13,5 @@ import Observation
 class TimerViewModel {
     var progress = 1.0
     var isRunning = false
+    var cycles = 1
 }

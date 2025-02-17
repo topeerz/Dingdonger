@@ -12,6 +12,7 @@ import AVFoundation
 protocol TimerIteractorProtocol {
     func onResetButtonTap()
     func onPauseStartButtonTap()
+    func onAddCycleButtonTap()
 
     var timerViewModel: TimerViewModel? { get set }
 }
@@ -49,6 +50,7 @@ class TimerIteractor: TimerIteractorProtocol {
     }
 
     private func startTimer() {
+        // TODO: probably need to abstract timer in oreder to be able to test this ...
         let step = 0.1
         timer = Timer.scheduledTimer(withTimeInterval: step, repeats: true) { [weak self] _ in
             Task { @MainActor [weak self] in
@@ -65,11 +67,27 @@ class TimerIteractor: TimerIteractorProtocol {
                     timerViewModel.progress = timeRemaining / totalTime
 
                 } else {
-                    self.stopTimer()
                     self.playSound()
+
+                    timerViewModel.cycles -= 1
+
+                    if timerViewModel.cycles == 0 {
+                        self.stopTimer()
+                        return
+                    }
+
+                    timeRemaining = totalTime
                 }
             }
         }
+    }
+
+    func onAddCycleButtonTap() {
+        guard let timerViewModel = self.timerViewModel else {
+            return
+        }
+
+        timerViewModel.cycles += 1
     }
 
     private func stopTimer() {

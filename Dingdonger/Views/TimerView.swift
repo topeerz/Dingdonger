@@ -29,6 +29,14 @@ struct TimerView: View {
                     .stroke(Theme.primaryColor, lineWidth: 10)
                     .rotationEffect(.degrees(90))
                     .animation(.linear(duration: 1), value: viewModel.progress)
+
+                Button( "+ \(viewModel.cycles)") {
+                    iteractor.onAddCycleButtonTap()
+                }
+                .padding()
+                .background(Color.blue)
+                .foregroundColor(.white)
+                .clipShape(Capsule())
             }
             .frame(width: 300, height: 300)
 
@@ -50,6 +58,7 @@ struct TimerView: View {
                 .background(Color.red)
                 .foregroundColor(.white)
                 .clipShape(Capsule())
+
             }
         }
         .padding()

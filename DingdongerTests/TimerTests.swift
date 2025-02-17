@@ -57,4 +57,20 @@ struct TimerTests {
         #expect(viewModel.isRunning == false)
     }
 
+    @Test func test_runFewCycles() throws {
+        // given
+        let sut = TimerIteractor()
+        let viewModel = TimerViewModel()
+        sut.timerViewModel = viewModel
+        viewModel.cycles = 2
+
+        sut.timerViewModel?.isRunning = false
+
+        // when
+        sut.onPauseStartButtonTap()
+
+        // then
+        #expect(viewModel.isRunning == true)
+    }
+
 }
