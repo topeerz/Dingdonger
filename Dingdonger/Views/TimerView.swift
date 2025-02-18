@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Observation
 
 struct Theme {
     static let backgroundColor = Color.gray
@@ -13,11 +14,12 @@ struct Theme {
 }
 
 struct TimerView: View {
-    @State private var viewModel = TimerViewModel()
+    @Bindable private var viewModel = TimerViewModel()
     private var iteractor = TimerIteractor()
 
     var body: some View {
         let _ = iteractor.timerViewModel = viewModel
+        let _ = Self._printChanges()
 
         VStack {
             ZStack {
@@ -30,13 +32,49 @@ struct TimerView: View {
                     .rotationEffect(.degrees(90))
                     .animation(.linear(duration: 1), value: viewModel.progress)
 
-                Button( "+ \(viewModel.cycles)") {
-                    iteractor.onAddCycleButtonTap()
+                GeometryReader { geometry in
+                        let buttonSize: CGFloat = 50 // Adjust size as needed
+
+                        HStack {
+                            Button("+") {
+                                viewModel.buttonPositions.append(randomPosition(in: geometry.size))
+                                iteractor.onAddCycleButtonTap()
+                            }
+                            .padding()
+                            .background(Theme.primaryColor)
+                            .foregroundColor(.white)
+                            .clipShape(Circle())
+                            .frame(width: buttonSize, height: buttonSize)
+
+                            Spacer()
+
+                            Button("+5") {
+                                for _ in 0..<5 {
+                                    viewModel.buttonPositions.append(randomPosition(in: geometry.size))
+                                }
+                                iteractor.onAddLargeCycleButtonTap()
+                            }
+                            .padding(20)
+                            .background(Color.green)
+                            .foregroundColor(.white)
+                            .clipShape(Capsule())
+                            .frame(width: buttonSize * 2, height: buttonSize)
+                        }
+    
+                        ForEach(0..<viewModel.cycles, id: \.self) { cycle in
+                            Button( "+1") {
+                                iteractor.onCycleButtonTap()
+                            }
+                            .padding()
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .clipShape(Circle())
+                            .position(viewModel.buttonPositions[cycle])
+                            .onAppear {
+                                startFloating(for: cycle, in: geometry.size)
+                            }
+                        }
                 }
-                .padding()
-                .background(Color.blue)
-                .foregroundColor(.white)
-                .clipShape(Capsule())
             }
             .frame(width: 300, height: 300)
 
@@ -58,12 +96,26 @@ struct TimerView: View {
                 .background(Color.red)
                 .foregroundColor(.white)
                 .clipShape(Capsule())
-
             }
         }
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Theme.backgroundColor)
+    }
+
+    // TODO: move to model
+    func randomPosition(in size: CGSize) -> CGPoint {
+        let x = CGFloat.random(in: 0...size.width)
+        let y = CGFloat.random(in: 0...size.height)
+        return CGPoint(x: x, y: y)
+    }
+
+    // TODO: move to model
+    func startFloating(for index: Int, in size: CGSize) {
+        let duration = Double.random(in: 2...5)
+        withAnimation(Animation.linear(duration: duration).repeatForever(autoreverses: true)) {
+            viewModel.buttonPositions[index] = randomPosition(in: size)
+        }
     }
 }
 

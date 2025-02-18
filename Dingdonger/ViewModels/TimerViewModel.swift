@@ -13,5 +13,6 @@ import Observation
 class TimerViewModel {
     var progress = 1.0
     var isRunning = false
-    var cycles = 1
+    var cycles = 0
+    var buttonPositions: [CGPoint] = []
 }

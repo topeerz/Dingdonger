@@ -13,6 +13,8 @@ protocol TimerIteractorProtocol {
     func onResetButtonTap()
     func onPauseStartButtonTap()
     func onAddCycleButtonTap()
+    func onAddLargeCycleButtonTap()
+    func onCycleButtonTap()
 
     var timerViewModel: TimerViewModel? { get set }
 }
@@ -88,6 +90,24 @@ class TimerIteractor: TimerIteractorProtocol {
         }
 
         timerViewModel.cycles += 1
+    }
+
+    func onAddLargeCycleButtonTap() {
+        guard let timerViewModel = self.timerViewModel else {
+            return
+        }
+
+        timerViewModel.cycles += 5
+    }
+
+    func onCycleButtonTap() {
+        guard let timerViewModel = self.timerViewModel else {
+            return
+        }
+
+        if timerViewModel.cycles > 0 {
+            timerViewModel.cycles -= 1
+        }
     }
 
     private func stopTimer() {
