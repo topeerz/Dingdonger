@@ -35,8 +35,12 @@ struct TimerView: View {
                 GeometryReader { geometry in
                         let buttonSize: CGFloat = 50 // Adjust size as needed
 
+                        // TODO: Add gluing smaller bubbles to larger ones on touch-and-hold on smaller one
+                        // TODO: Add plitting larger bubbles on tap (similar to popping small ones)
+
                         HStack {
                             Button("+") {
+                                // TODO: move this to model
                                 viewModel.buttonPositions.append(randomPosition(in: geometry.size))
                                 iteractor.onAddCycleButtonTap()
                             }
@@ -50,6 +54,7 @@ struct TimerView: View {
 
                             Button("+5") {
                                 for _ in 0..<5 {
+                                    // TODO: move this to model
                                     viewModel.buttonPositions.append(randomPosition(in: geometry.size))
                                 }
                                 iteractor.onAddLargeCycleButtonTap()
